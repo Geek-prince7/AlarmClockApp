@@ -18,7 +18,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
 TextClock currentTime;
 TimePicker alarmTime;
-
+ToggleButton tb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,35 +26,39 @@ TimePicker alarmTime;
         setContentView(R.layout.activity_main);
         alarmTime=findViewById(R.id.timePicker1);
         currentTime=findViewById(R.id.tc1);
+        tb=findViewById(R.id.toggleButton);
+        Timer timer = new Timer();
+        Ringtone ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+        //I ama using Timer instead of Alarm Manager
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (currentTime.getText().toString().equals(Alarmtime()) && tb.isChecked()) {
+                    ringtone.setVolume(1);
+                    ringtone.play();
+
+                } else {
+                    ringtone.stop();
+                }
+
+            }
+        }, 0, 1000);
+
 
 
     }
+
     public void OnToggleClicked(View view)
     {
         if(((ToggleButton)view).isChecked()) {
             Toast.makeText(this, "Alarm on", Toast.LENGTH_SHORT).show();
-
-
-            //I ama using Timer instead of Alarm Manager
-            Timer timer = new Timer();
-            Ringtone ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (currentTime.getText().toString().equals(Alarmtime())) {
-                        ringtone.setVolume(1);
-                        ringtone.play();
-
-                    } else {
-                        ringtone.stop();
-                    }
-
-                }
-            }, 0, 1000);
         }
 
 
+
     }
+
+
 
     private String Alarmtime() {
         Integer hours=alarmTime.getHour();
